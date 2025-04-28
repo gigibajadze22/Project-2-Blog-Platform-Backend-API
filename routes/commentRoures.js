@@ -1,0 +1,20 @@
+import express from 'express';
+import {
+    addCommentOnPost,
+    getCommentsOnPost,
+    updateComment,
+    deleteComment
+} from '../controllers/commentController.js';
+import { auth,isowneroradmin } from '../middlewares/auth.js';
+
+
+const commentRouter = express.Router();
+
+
+commentRouter.post('/:postId',auth, addCommentOnPost);
+commentRouter.get('/:postId', getCommentsOnPost);
+commentRouter.patch('/:id',auth, updateComment);
+commentRouter.delete('/:id',auth, deleteComment);
+
+export default commentRouter;
+

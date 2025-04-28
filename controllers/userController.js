@@ -13,9 +13,9 @@ const getAllUsers = async (req, res) => {
     } catch (error) {
         res.status(500).json({ error: "Failed to fetch users" });
     }
-    }
+}
    // auth
-    const registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
         const { name, email, password } = req.body;
         try {
             const hashedPassword = await bcrypt.hash(password, 10); 
@@ -30,8 +30,8 @@ const getAllUsers = async (req, res) => {
         } catch (error) {
             res.status(500).json({ error: "Failed to register user" });
         }
-    }
-    const loginUser = async (req, res) => { 
+}
+const loginUser = async (req, res) => { 
         const { email, password } = req.body;
         try {
             const user = await prisma.user.findUnique({
@@ -52,7 +52,7 @@ const getAllUsers = async (req, res) => {
         } catch (error) {
             res.status(500).json({ error: "Failed to login user" });
         }
-    }
+}
    
 const myprofile = async (req, res) => {
     try {
@@ -67,6 +67,7 @@ const myprofile = async (req, res) => {
         res.status(500).json({ error: "Failed to fetch user profile" });
     }
 }
+
 async function uploadPicture(req, res) {
     try {
 
@@ -91,8 +92,7 @@ async function uploadPicture(req, res) {
       res.status(500).json({ message: "Server error" });
     }
   }
-
-   
+ 
   const updateUser = async (req, res) => {
     const { name, profileImage } = req.body;
 

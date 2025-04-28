@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 
+
 const auth = (req, res, next) => {
     const token = req.headers["authorization"]?.split(' ')[1];
     if (!token) {
@@ -20,4 +21,18 @@ const isAdmin = (req, res, next) => {
     }
     next();
 };
-export {auth, isAdmin}; 
+
+
+
+const isowneroradmin = (req, res, next) => {
+    if (req.user.id !== parseInt(req.params.id) && req.user.role !== "admin") {
+        return res.status(403).json({ message: "Forbidden" });
+    }
+    next();
+};
+
+
+
+
+
+export {auth, isAdmin,isowneroradmin}; 
