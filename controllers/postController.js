@@ -28,6 +28,13 @@ const getPostById = async (req, res) => {
 
 const createpost = async (req, res) => {
     const { title, content } = req.body;
+
+    // ✅ DEBUG LOGS — Add these
+    console.log("Title:", title);
+    console.log("Content:", content);
+    console.log("User ID:", req.user?.id);
+    console.log("Uploaded files:", req.files);
+
     try {
         const post = await prisma.post.create({
             data: {
@@ -36,11 +43,27 @@ const createpost = async (req, res) => {
                 authorId: req.user.id,
             },
         });
+
+        if (req.files && req.files.length > 0) {
+            const images = req.files.map((file) => ({
+                postId: post.id,
+                imageUrl: file.path,
+            }));
+
+            await prisma.postImage.createMany({
+                data: images,
+            });
+        }
+
         res.status(201).json(post);
     } catch (error) {
+        // ✅ THIS SHOWS THE REAL ERROR
+        console.error("CREATE POST ERROR:", error);
         res.status(500).json({ error: "Failed to create post" });
     }
-}
+};
+
+
 
 const updatePost = async (req, res) => {
     const { id } = req.params;
@@ -70,4 +93,7 @@ const deletePost = async (req, res) => {
         res.status(500).json({ error: "Failed to delete post" });
     }
 }
+
+
+
 export {getAllPosts,getPostById,createpost,updatePost,deletePost}

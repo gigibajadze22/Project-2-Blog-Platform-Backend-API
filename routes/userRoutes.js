@@ -1,5 +1,5 @@
 import express from 'express';
-import upload from '../middlewares/uploadFiles.js'
+import upload from '../middlewares/uploadFiles.js';
 import { 
     getAllUsers,
     registerUser,
@@ -7,6 +7,8 @@ import {
     myprofile,
     updateUser,
     uploadPicture,
+    forgetPassword,
+    resetPassword
 } from '../controllers/userController.js';
 import { auth,isAdmin } from '../middlewares/auth.js';
 const authrouter = express.Router();
@@ -22,5 +24,7 @@ authrouter.post('/login', loginUser);
 router.get('/me',auth,myprofile);
 router.patch('/update',auth,upload.single('changePicture'),updateUser);
 router.post('/uploadPicture',auth,upload.single('profilePicture'),uploadPicture);
+router.post('/forgetPassword',forgetPassword);
+router.post('/resetPassword',resetPassword );
 
 export {authrouter,router}; ;

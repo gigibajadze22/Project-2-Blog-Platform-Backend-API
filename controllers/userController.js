@@ -4,6 +4,7 @@ const prisma = new PrismaClient();
 
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { sendEmail } from "../utils/emailService.js";
 
 
 const getAllUsers = async (req, res) => {
@@ -117,5 +118,66 @@ async function uploadPicture(req, res) {
     }
 };
 
+const forgetPassword = async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await prisma.user.findUnique({
+            where: { email },
+        });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+       
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpiry = new Date(Date.now() + 10 * 60 * 1000);
+        await prisma.user.update({
+            where: { email },
+            data: {
+                otpCode,
+                otpExpiry,
+            },
+        });
+        
+         sendEmail(email,
+            "Password Reset OTP",
+            `<h1>Password Reset OTP Code</h1>
+      <p>You requested a password reset. Use the following OTP code to reset your password:</p>
+      <h2 style="color: #4CAF50; font-size: 32px; letter-spacing: 5px; text-align: center;">${otpCode}</h2>
+      <p>This code will expire in 10 minutes.</p>
+      <p>If you didn't request this, please ignore this email.</p>`
+        );
+        res.json({ message: "OTP sent to email"});
 
-export {getAllUsers, registerUser, loginUser, myprofile, updateUser, uploadPicture};
+    } catch (error) {
+        res.status(500).json({ error: "Failed to send password reset link" });
+    }
+}
+
+const resetPassword = async (req, res) => {
+    const { email, otpCode, newPassword } = req.body;
+    try {
+        const user = await prisma.user.findUnique({
+            where: { email },
+        });
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+        if (user.otpCode !== otpCode || new Date() > user.otpExpiry) {
+            return res.status(400).json({ error: "Invalid or expired OTP" });
+        }
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        await prisma.user.update({
+            where: { email },
+            data: {
+                password: hashedPassword,
+                otpCode: null,
+                otpExpiry: null,
+            },
+        });
+        res.json({ message: "Password reset successfully" });
+    } catch (error) {
+        res.status(500).json({ error: "Failed to reset password" });
+    }
+}
+
+export {getAllUsers, registerUser, loginUser, myprofile, updateUser, uploadPicture,forgetPassword,resetPassword};

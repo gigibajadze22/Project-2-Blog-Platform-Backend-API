@@ -30,6 +30,8 @@ const filterFiles = (req,file,cb) =>{
 }
 
 
+
+
 const upload = multer({
     storage: storage,
     fileFilter: filterFiles,
@@ -39,4 +41,11 @@ const upload = multer({
 })
 
 
-export default upload
+const uploadPostImages = multer({ 
+    storage: storage,
+     fileFilter: filterFiles
+     }).array('images', 5); // Accept up to 5 images
+
+
+export default upload; 
+export {uploadPostImages}
