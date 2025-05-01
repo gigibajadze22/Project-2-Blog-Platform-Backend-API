@@ -6,7 +6,7 @@ import {
     deleteComment
 } from '../controllers/commentController.js';
 import { auth, } from '../middlewares/auth.js';
-import upload from '../middlewares/uploadFiles.js';
+
 
 const commentRouter = express.Router();
 

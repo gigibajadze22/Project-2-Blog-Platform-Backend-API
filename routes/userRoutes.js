@@ -11,6 +11,7 @@ import {
     resetPassword
 } from '../controllers/userController.js';
 import { auth,isAdmin } from '../middlewares/auth.js';
+
 const authrouter = express.Router();
 const router = express.Router();
 
@@ -27,4 +28,4 @@ router.post('/uploadPicture',auth,upload.single('profilePicture'),uploadPicture)
 router.post('/forgetPassword',forgetPassword);
 router.post('/resetPassword',resetPassword );
 
-export {authrouter,router}; ;
+export {authrouter,router}; 

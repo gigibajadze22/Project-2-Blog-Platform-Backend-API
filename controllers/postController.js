@@ -2,12 +2,14 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+
+
 const getAllPosts = async (req, res) => {
     try {
         const posts = await prisma.post.findMany({});
         res.status(200).json(posts);
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch posts" });
+        return next(new Error("Failed to fetch posts"));
     }
 }
 
@@ -18,11 +20,11 @@ const getPostById = async (req, res) => {
             where: { id: parseInt(id) },
         });
         if (!post) {
-            return res.status(404).json({ error: "Post not found" });
+            return next(new Error("Post not found"));
         }
         res.status(200).json(post);
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch post" });
+        return next(new Error("Failed to fetch post"));
     }
 }
 
@@ -59,11 +61,9 @@ const createpost = async (req, res) => {
     } catch (error) {
         // ✅ THIS SHOWS THE REAL ERROR
         console.error("CREATE POST ERROR:", error);
-        res.status(500).json({ error: "Failed to create post" });
+       return next(new Error("Failed to create post"));
     }
 };
-
-
 
 const updatePost = async (req, res) => {
     const { id } = req.params;
@@ -78,7 +78,7 @@ const updatePost = async (req, res) => {
         });
         res.status(200).json(post);
     } catch (error) {
-        res.status(500).json({ error: "Failed to update post" });
+        return next(new Error("Failed to update post"));
     }
 }
 
@@ -88,12 +88,10 @@ const deletePost = async (req, res) => {
         await prisma.post.delete({
             where: { id: parseInt(id) },
         });
-        res.status(200).json({ message: "Post deleted successfully" });
+       return next(new Error("Post deleted successfully"));
     } catch (error) {
-        res.status(500).json({ error: "Failed to delete post" });
+       return next(new Error("Failed to delete post"));
     }
 }
-
-
 
 export {getAllPosts,getPostById,createpost,updatePost,deletePost}

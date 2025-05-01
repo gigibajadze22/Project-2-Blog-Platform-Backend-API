@@ -1,14 +1,14 @@
 import jwt from "jsonwebtoken";
-
+import { AppError } from "../utils/errorhandler.js";
 
 const auth = (req, res, next) => {
     const token = req.headers["authorization"]?.split(' ')[1];
     if (!token) {
-        return res.status(401).json({ message: "No token provided" });
+        return next(new AppError("No token provided", 401));
     }
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-            return res.status(401).json({ message: "Unauthorized" });
+            return next(new AppError("Failed to authenticate token", 401));
         }
         req.user = decoded;
         next();
@@ -17,7 +17,7 @@ const auth = (req, res, next) => {
 
 const isAdmin = (req, res, next) => {
     if (req.user.role !== "admin") {
-        return res.status(403).json({ message: "Forbidden" });
+        return next(new AppError("Forbidden", 403));
     }
     next();
 };
@@ -26,7 +26,7 @@ const isAdmin = (req, res, next) => {
 
 const isowneroradmin = (req, res, next) => {
     if (req.user.id !== parseInt(req.params.id) && req.user.role !== "admin") {
-        return res.status(403).json({ message: "Forbidden" });
+        return next(new AppError("Forbidden", 403));
     }
     next();
 };

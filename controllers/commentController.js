@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
+
 const prisma = new PrismaClient();
 
 
@@ -18,7 +19,7 @@ export const addCommentOnPost = async (req, res) => {
         });
         res.status(201).json(comment);
     } catch (error) {
-        res.status(500).json({ error: "Failed to add comment" });
+        return next(new AppError("Failed to add comment", 500));
     }
 }
 
@@ -38,7 +39,7 @@ export const getCommentsOnPost = async (req, res) => {
         });
         res.status(200).json(comments);
     } catch (error) {
-        res.status(500).json({ error: "Failed to fetch comments" });
+        return next(new AppError("Failed to fetch comments", 500));
     }
 }
 
@@ -50,13 +51,13 @@ export const updateComment = async (req, res) => {
         where: { id: parseInt(id) },
     }).then((comment) => {
         if (!comment) {
-            return res.status(404).json({ error: "Comment not found" });
+            return next(new AppError("Comment not found", 404));
         }
         if (comment.userId !== req.user.id && req.user.role !== "admin") {
-            return res.status(403).json({ error: "Forbidden" });
+            return next(new AppError("Forbidden", 403));
         }
     }).catch((error) => {
-        return res.status(500).json({ error: "Failed to fetch comment" });
+        return next(new AppError("Failed to fetch comment", 500));
     });
     try {
         const comment = await prisma.comment.update({
@@ -65,7 +66,7 @@ export const updateComment = async (req, res) => {
         });    
         res.status(200).json(comment);
     } catch (error) {
-        res.status(500).json({ error: "Failed to update comment" });
+        return next(new AppError("Failed to update comment", 500));
     }
 }
 
@@ -78,11 +79,11 @@ export const deleteComment = async (req, res) => {
         });
 
         if (!comment) {
-            return res.status(404).json({ error: "Comment not found" });
+            return next(new AppError("Comment not found", 404));
         }
 
         if (comment.userId !== req.user.id && req.user.role !== "admin") {
-            return res.status(403).json({ error: "Forbidden" });
+            return next(new AppError("Forbidden", 403));
         }
 
         await prisma.comment.delete({
@@ -93,6 +94,6 @@ export const deleteComment = async (req, res) => {
 
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Something went wrong" });
+        return next(new AppError("Failed to delete comment", 500));
     }
 };
