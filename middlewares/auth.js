@@ -13,7 +13,7 @@ const auth = (req, res, next) => {
         req.user = decoded;
         next();
     }); 
-}
+};
 
 const isAdmin = (req, res, next) => {
     if (req.user.role !== "admin") {
@@ -23,16 +23,4 @@ const isAdmin = (req, res, next) => {
 };
 
 
-
-const isowneroradmin = (req, res, next) => {
-    if (req.user.id !== parseInt(req.params.id) && req.user.role !== "admin") {
-        return next(new AppError("Forbidden", 403));
-    }
-    next();
-};
-
-
-
-
-
-export {auth, isAdmin,isowneroradmin}; 
+export { auth, isAdmin, };

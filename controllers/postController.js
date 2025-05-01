@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
+
 const prisma = new PrismaClient();
 
 
@@ -76,22 +77,48 @@ const updatePost = async (req, res) => {
                 content,
             },
         });
+        if (!post) {
+            return next(new Error("Post not found"));
+        }
+
+        const isOwnerOrAdmin = req.user.role === "admin" || post.authorId === req.user.id;
+        if (!isOwnerOrAdmin) {
+            return next(new Error("Forbidden"));
+        }
+
         res.status(200).json(post);
     } catch (error) {
-        return next(new Error("Failed to update post"));
+       return next(new Error("Failed to update post"));
     }
 }
 
-const deletePost = async (req, res) => {    
+const deletePostWithImages = async (req, res) => {
     const { id } = req.params;
     try {
+        const post = await prisma.post.findUnique({
+            where: { id: parseInt(id) },
+        });
+        if (!post) {
+            return next(new Error("Post not found"));
+        }
+
+        const isOwnerOrAdmin = req.user.role === "admin" || post.authorId === req.user.id;
+        if (!isOwnerOrAdmin) {
+            return next(new Error("Forbidden"));
+        }
+
+        await prisma.postImage.deleteMany({
+            where: { postId: parseInt(id) },
+        });
+
         await prisma.post.delete({
             where: { id: parseInt(id) },
         });
-       return next(new Error("Post deleted successfully"));
+
+        res.status(200).json({ message: "Post deleted successfully" });
     } catch (error) {
        return next(new Error("Failed to delete post"));
     }
 }
 
-export {getAllPosts,getPostById,createpost,updatePost,deletePost}
+export {getAllPosts,getPostById,createpost,updatePost,deletePostWithImages}

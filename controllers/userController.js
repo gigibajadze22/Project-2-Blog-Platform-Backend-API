@@ -118,6 +118,37 @@ async function uploadPicture(req, res) {
     }
 };
 
+const deleteUser = async (req, res, next) => {
+    const { id } = req.params;
+
+    
+    if (!id || isNaN(parseInt(id))) {
+        return next(new AppError("Invalid ID", 400));
+    }
+
+    try {
+
+        const isAdmin = req.user.role === "admin";
+        if (!isAdmin) {
+            return next(new AppError("Unauthorized to delete user", 403));
+        }
+        const user = await prisma.user.delete({
+            where: { id: parseInt(id) },
+        });
+
+        if (!user) {
+            return next(new AppError("User not found", 404));
+        }
+
+        
+        
+
+        res.status(200).json({ message: "User deleted successfully", user });
+    } catch (error) {
+        next(error); // Pass the error to the next middleware
+    }
+};
+
 const forgetPassword = async (req, res) => {
     const { email } = req.body;
     try {
@@ -180,4 +211,4 @@ const resetPassword = async (req, res) => {
     }
 }
 
-export {getAllUsers, registerUser, loginUser, myprofile, updateUser, uploadPicture,forgetPassword,resetPassword};
+export {getAllUsers, registerUser, loginUser, myprofile, updateUser,deleteUser, uploadPicture,forgetPassword,resetPassword};

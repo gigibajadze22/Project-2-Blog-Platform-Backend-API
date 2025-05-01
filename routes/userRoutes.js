@@ -8,7 +8,8 @@ import {
     updateUser,
     uploadPicture,
     forgetPassword,
-    resetPassword
+    resetPassword,
+    deleteUser
 } from '../controllers/userController.js';
 import { auth,isAdmin } from '../middlewares/auth.js';
 
@@ -25,6 +26,7 @@ authrouter.post('/login', loginUser);
 router.get('/me',auth,myprofile);
 router.patch('/update',auth,upload.single('changePicture'),updateUser);
 router.post('/uploadPicture',auth,upload.single('profilePicture'),uploadPicture);
+router.delete('/deleteUser/:id',auth,deleteUser);
 router.post('/forgetPassword',forgetPassword);
 router.post('/resetPassword',resetPassword );
 

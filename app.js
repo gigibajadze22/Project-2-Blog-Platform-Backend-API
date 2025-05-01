@@ -4,6 +4,8 @@ import postRouter from './routes/postRoutes.js'
 import commentRouter from './routes/commentRoutes.js'
 import { handleError } from './utils/errorhandler.js'
 import { AppError } from './utils/errorhandler.js'
+import swaggerUi from "swagger-ui-express";
+import specs from "./middlewares/swagger.js";
 const app = express()
 app.use(express.json())
 
@@ -12,7 +14,7 @@ app.use(express.json())
 
 app.use('/uploads', express.static('uploads'));
 
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 
 app.use('/api/auth',authrouter)
