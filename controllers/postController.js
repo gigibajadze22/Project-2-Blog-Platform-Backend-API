@@ -70,6 +70,12 @@ const updatePost = async (req, res, next) => {
     const { id } = req.params;
     const { title, content } = req.body;
     try {
+
+        const isOwnerOrAdmin = req.user.role === "admin" || post.authorId === req.user.id;
+        if (!isOwnerOrAdmin) {
+            return next(new AppError("Forbidden", 403));
+        }
+
         const post = await prisma.post.update({
             where: { id: parseInt(id) },
             data: {
@@ -81,10 +87,7 @@ const updatePost = async (req, res, next) => {
             return next(new AppError("Post not found", 404));
         }
 
-        const isOwnerOrAdmin = req.user.role === "admin" || post.authorId === req.user.id;
-        if (!isOwnerOrAdmin) {
-            return next(new AppError("Forbidden", 403));
-        }
+        
 
         res.status(200).json(post);
     } catch (error) {
