@@ -7,7 +7,7 @@ import jwt from "jsonwebtoken";
 import { sendEmail } from "../utils/emailService.js";
 import { AppError } from "../utils/errorhandler.js";
 
-const getAllUsers = async (req, res) => {
+const getAllUsers = async (req, res,next) => {
     try {
         const users = await prisma.user.findMany();
         res.status(200).json(users);
@@ -30,7 +30,7 @@ const registerUser = async (req, res,next) => {
             res.status(201).json(user);
         } catch (error) {
             console.error(error); // Log the error for debugging
-            return next(new AppError("Failed to register user", 500));
+            return next(new AppError("Failed to register user", 400));
         }
 }
 const loginUser = async (req, res,next) => { 
@@ -56,7 +56,7 @@ const loginUser = async (req, res,next) => {
         }
 }
    
-const myprofile = async (req, res) => {
+const myprofile = async (req, res,next) => {
     try {
         const user = await prisma.user.findUnique({
             where: { id: req.user.id },
@@ -70,7 +70,7 @@ const myprofile = async (req, res) => {
     }
 }
 
-async function uploadPicture(req, res) {
+async function uploadPicture(req, res, next) {
     try {
 
         if (!req.user || !req.user.id) {
@@ -95,7 +95,7 @@ async function uploadPicture(req, res) {
     }
   }
  
-  const updateUser = async (req, res) => {
+  const updateUser = async (req, res, next) => {
     const { name, profileImage } = req.body;
 
     // Ensure the user is authenticated
@@ -150,7 +150,7 @@ const deleteUser = async (req, res, next) => {
     }
 };
 
-const forgetPassword = async (req, res) => {
+const forgetPassword = async (req, res, next) => {
     const { email } = req.body;
     try {
         const user = await prisma.user.findUnique({
@@ -185,7 +185,7 @@ const forgetPassword = async (req, res) => {
     }
 }
 
-const resetPassword = async (req, res) => {
+const resetPassword = async (req, res,next) => {
     const { email, otpCode, newPassword } = req.body;
     try {
         const user = await prisma.user.findUnique({

@@ -3,9 +3,9 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+import { AppError } from "../utils/errorhandler.js";
 
-
-export const addCommentOnPost = async (req, res) => {
+export const addCommentOnPost = async (req, res, next) => {
     const { postId } = req.params;
     const { content } = req.body;
 
@@ -19,12 +19,13 @@ export const addCommentOnPost = async (req, res) => {
         });
         res.status(201).json(comment);
     } catch (error) {
+        console.error(error);
         return next(new AppError("Failed to add comment", 500));
     }
 }
 
 
-export const getCommentsOnPost = async (req, res) => {
+export const getCommentsOnPost = async (req, res, next) => {
     const { postId } = req.params;
 
     try {
@@ -44,7 +45,7 @@ export const getCommentsOnPost = async (req, res) => {
 }
 
 
-export const updateComment = async (req, res) => {
+export const updateComment = async (req, res,next) => {
     const { id } = req.params;
     const { content } = req.body;
     await prisma.comment.findUnique({

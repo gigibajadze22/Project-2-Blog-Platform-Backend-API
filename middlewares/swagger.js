@@ -10,6 +10,10 @@ const options = {
     },
     servers: [
       {
+        url: "https://blog-platform-api-1-75b3dc5ec6c8.herokuapp.com",
+        description: "Production server",
+      },
+      {
         url: "http://localhost:3000",
         description: "Development server",
       },

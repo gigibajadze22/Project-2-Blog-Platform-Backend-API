@@ -1,35 +1,35 @@
 import { PrismaClient } from "@prisma/client";
-
+import { AppError } from "../utils/errorhandler.js";
 
 const prisma = new PrismaClient();
 
 
 
-const getAllPosts = async (req, res) => {
+const getAllPosts = async (req, res,next) => {
     try {
         const posts = await prisma.post.findMany({});
         res.status(200).json(posts);
     } catch (error) {
-        return next(new Error("Failed to fetch posts"));
+        return next(new AppError("Failed to fetch posts", 500));
     }
 }
 
-const getPostById = async (req, res) => {
+const getPostById = async (req, res, next) => {
     const { id } = req.params;
     try {
         const post = await prisma.post.findUnique({
             where: { id: parseInt(id) },
         });
         if (!post) {
-            return next(new Error("Post not found"));
+            return next(new AppError("Post not found", 404));
         }
         res.status(200).json(post);
     } catch (error) {
-        return next(new Error("Failed to fetch post"));
+        return next(new AppError("Failed to fetch post", 500));
     }
 }
 
-const createpost = async (req, res) => {
+const createpost = async (req, res, next) => {
     const { title, content } = req.body;
 
     // ✅ DEBUG LOGS — Add these
@@ -62,11 +62,11 @@ const createpost = async (req, res) => {
     } catch (error) {
         // ✅ THIS SHOWS THE REAL ERROR
         console.error("CREATE POST ERROR:", error);
-       return next(new Error("Failed to create post"));
+       return next(new AppError("Failed to create post", 500));
     }
 };
 
-const updatePost = async (req, res) => {
+const updatePost = async (req, res, next) => {
     const { id } = req.params;
     const { title, content } = req.body;
     try {
@@ -78,33 +78,33 @@ const updatePost = async (req, res) => {
             },
         });
         if (!post) {
-            return next(new Error("Post not found"));
+            return next(new AppError("Post not found", 404));
         }
 
         const isOwnerOrAdmin = req.user.role === "admin" || post.authorId === req.user.id;
         if (!isOwnerOrAdmin) {
-            return next(new Error("Forbidden"));
+            return next(new AppError("Forbidden", 403));
         }
 
         res.status(200).json(post);
     } catch (error) {
-       return next(new Error("Failed to update post"));
+       return next(new AppError("Failed to update post", 500));
     }
 }
 
-const deletePostWithImages = async (req, res) => {
+const deletePostWithImages = async (req, res,next) => {
     const { id } = req.params;
     try {
         const post = await prisma.post.findUnique({
             where: { id: parseInt(id) },
         });
         if (!post) {
-            return next(new Error("Post not found"));
+            return next(new AppError("Post not found", 404));
         }
 
         const isOwnerOrAdmin = req.user.role === "admin" || post.authorId === req.user.id;
         if (!isOwnerOrAdmin) {
-            return next(new Error("Forbidden"));
+            return next(new AppError("Forbidden", 403));
         }
 
         await prisma.postImage.deleteMany({
@@ -117,7 +117,7 @@ const deletePostWithImages = async (req, res) => {
 
         res.status(200).json({ message: "Post deleted successfully" });
     } catch (error) {
-       return next(new Error("Failed to delete post"));
+       return next(new AppError("Failed to delete post", 500));
     }
 }
 
