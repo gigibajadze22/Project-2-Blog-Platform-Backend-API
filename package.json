@@ -1,7 +1,7 @@
 {
   "name": "blog-platform-backend-api",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "server.js",
   "type": "module",
   "scripts": {
     "start:dev": "cross-env NODE_ENV=development nodemon server.js",
