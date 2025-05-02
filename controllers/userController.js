@@ -29,6 +29,7 @@ const registerUser = async (req, res,next) => {
             });
             res.status(201).json(user);
         } catch (error) {
+            console.error(error); // Log the error for debugging
             return next(new AppError("Failed to register user", 500));
         }
 }
