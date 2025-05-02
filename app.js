@@ -23,6 +23,7 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 })
 
+
 app.use('/api/auth',authrouter)
 app.use('/api/users',router)
 app.use('/api/posts',postRouter)

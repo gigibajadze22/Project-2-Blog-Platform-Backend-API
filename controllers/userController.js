@@ -16,7 +16,7 @@ const getAllUsers = async (req, res) => {
     }
 }
    // auth
-const registerUser = async (req, res) => {
+const registerUser = async (req, res,next) => {
         const { name, email, password } = req.body;
         try {
             const hashedPassword = await bcrypt.hash(password, 10); 
