@@ -14,8 +14,14 @@ app.use(express.json())
 
 app.use('/uploads', express.static('uploads'));
 
+
+
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+})
 
 app.use('/api/auth',authrouter)
 app.use('/api/users',router)
