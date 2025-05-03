@@ -6,13 +6,20 @@ const auth = (req, res, next) => {
     if (!token) {
         return next(new AppError("No token provided", 401));
     }
+
+    
+
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
+            
+            if (err.name === "TokenExpiredError") {
+                return next(new AppError("Token has expired, please log in again", 401));
+            }
             return next(new AppError("Failed to authenticate token", 401));
         }
         req.user = decoded;
         next();
-    }); 
+    });
 };
 
 const isAdmin = (req, res, next) => {
@@ -22,5 +29,4 @@ const isAdmin = (req, res, next) => {
     next();
 };
 
-
-export { auth, isAdmin, };
+export { auth, isAdmin };

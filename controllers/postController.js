@@ -71,23 +71,27 @@ const updatePost = async (req, res, next) => {
     const { title, content } = req.body;
     try {
 
-       if(post.authorId !== req.user.id && req.user.role !== "admin"){
-            return next(new AppError("Forbidden", 403));   
+        const post = await prisma.post.findUnique({
+            where: { id: parseInt(id) },
+        });
+        if (!post) {
+            return next(new AppError("Post not found", 404));
         }
-        const post = await prisma.post.update({
+
+        const isOwnerOrAdmin = req.user.role === "admin" || post.authorId === req.user.id;
+        if (!isOwnerOrAdmin) {
+            return next(new AppError("Forbidden", 403));
+        }
+
+        const updatedPost = await prisma.post.update({
             where: { id: parseInt(id) },
             data: {
                 title,
                 content,
             },
         });
-        if (!post) {
-            return next(new AppError("Post not found", 404));
-        }
 
-        
-
-        res.status(200).json(post);
+        res.status(200).json(updatedPost);
     } catch (error) {
        return next(new AppError("Failed to update post", 500));
     }
