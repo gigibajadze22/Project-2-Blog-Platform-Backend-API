@@ -15,6 +15,6 @@ const postRouter = express.Router();
 postRouter.get('/', getAllPosts);
 postRouter.get('/:id', getPostById);
 postRouter.post('/', auth,uploadPostImages, createpost);
-postRouter.patch('/:id', auth,  updatePost);
+postRouter.patch('/:id', auth,updatePost);
 postRouter.delete('/:id', auth, deletePostWithImages);
 export default postRouter;
