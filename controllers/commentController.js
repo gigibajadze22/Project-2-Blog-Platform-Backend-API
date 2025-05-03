@@ -48,25 +48,29 @@ export const getCommentsOnPost = async (req, res, next) => {
 export const updateComment = async (req, res,next) => {
     const { id } = req.params;
     const { content } = req.body;
-    await prisma.comment.findUnique({
-        where: { id: parseInt(id) },
-    }).then((comment) => {
+
+    try {
+        const comment = await prisma.comment.findUnique({
+            where: { id: parseInt(id) },
+        });
+
         if (!comment) {
             return next(new AppError("Comment not found", 404));
         }
+
         if (comment.userId !== req.user.id && req.user.role !== "admin") {
             return next(new AppError("Forbidden", 403));
         }
-    }).catch((error) => {
-        return next(new AppError("Failed to fetch comment", 500));
-    });
-    try {
-        const comment = await prisma.comment.update({
+
+        const updatedComment = await prisma.comment.update({
             where: { id: parseInt(id) },
             data: { content },
-        });    
-        res.status(200).json(comment);
+        });
+
+        res.status(200).json(updatedComment);
+
     } catch (error) {
+        console.error(error);
         return next(new AppError("Failed to update comment", 500));
     }
 }
@@ -98,3 +102,4 @@ export const deleteComment = async (req, res) => {
         return next(new AppError("Failed to delete comment", 500));
     }
 };
+
