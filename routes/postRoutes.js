@@ -4,7 +4,8 @@ import {
     getPostById,
     createpost,
     updatePost,
-    deletePostWithImages
+    deletePost
+    
      } from '../controllers/postController.js';
 
 import { auth} from '../middlewares/auth.js';
@@ -16,5 +17,5 @@ postRouter.get('/', getAllPosts);
 postRouter.get('/:id', getPostById);
 postRouter.post('/', auth,uploadPostImages, createpost);
 postRouter.patch('/:id', auth,updatePost);
-postRouter.delete('/:id', auth, deletePostWithImages);
+postRouter.delete('/:id', auth, deletePost);
 export default postRouter;

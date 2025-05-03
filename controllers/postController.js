@@ -97,12 +97,13 @@ const updatePost = async (req, res, next) => {
     }
 }
 
-const deletePostWithImages = async (req, res,next) => {
+const deletePost = async (req, res, next) => {
     const { id } = req.params;
     try {
         const post = await prisma.post.findUnique({
             where: { id: parseInt(id) },
         });
+
         if (!post) {
             return next(new AppError("Post not found", 404));
         }
@@ -112,18 +113,23 @@ const deletePostWithImages = async (req, res,next) => {
             return next(new AppError("Forbidden", 403));
         }
 
+       
         await prisma.postImage.deleteMany({
             where: { postId: parseInt(id) },
         });
 
+        await prisma.comment.deleteMany({
+            where: { postId: parseInt(id) },
+        });
+        
         await prisma.post.delete({
             where: { id: parseInt(id) },
         });
-
         res.status(200).json({ message: "Post deleted successfully" });
     } catch (error) {
-       return next(new AppError("Failed to delete post", 500));
+        return next(new AppError("Failed to delete post", 500));
     }
-}
+};
 
-export {getAllPosts,getPostById,createpost,updatePost,deletePostWithImages}
+
+export {getAllPosts,getPostById,createpost,updatePost,deletePost}
