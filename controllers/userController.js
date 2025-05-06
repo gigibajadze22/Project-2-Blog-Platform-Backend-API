@@ -49,7 +49,7 @@ const loginUser = async (req, res,next) => {
             const token = jwt.sign({id:user.id,role: user.role}, process.env.JWT_SECRET, { 
                 expiresIn: '1h' 
               });
-
+              delete user.password;
             res.status(200).json({token,user});
         } catch (error) {
             next(new AppError("Failed to login user", 500)); 
