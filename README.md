@@ -1,79 +1,60 @@
-Blog Platform Backend API
-About the Project
+# Blog Platform Backend API
+
+## About the Project
+
 Backend API for the Blog Platform, which allows users to register, create posts, edit, delete, view them, and add comments. The system provides role-based authorization (User and Admin) and secure resource management.
 
-Key Features
-User registration and login with JWT
+## Key Features
 
-Role-based access control (User, Admin)
+- User registration and login with JWT  
+- Role-based access control (User, Admin)  
+- CRUD operations for posts and comments  
+- Password hashing with bcrypt  
+- Uploading profile and post images with Multer  
+- Password recovery via email using Nodemailer  
+- Standardized error handling  
+- API documentation in Swagger UI  
+- Protected API endpoints with authorization  
+- Ready for online deployment (Heroku and others)  
 
-CRUD operations for posts and comments
+## Technologies Used
 
-Password hashing with bcrypt
+- Node.js, Express.js  
+- PostgreSQL (Prisma ORM)  
+- JWT, bcrypt  
+- Multer, Nodemailer  
+- Swagger (API documentation)  
+- Postman (API testing)  
 
-Uploading profile and post images with Multer
+## API Endpoints Overview
 
-Password recovery via email using Nodemailer
-
-Standardized error handling
-
-API documentation in Swagger UI
-
-Protected API endpoints with authorization
-
-Ready for online deployment (Heroku and others)
-
-Technologies Used
-Node.js, Express.js
-
-PostgreSQL (Prisma ORM)
-
-JWT, bcrypt
-
-Multer, Nodemailer
-
-Swagger (API documentation)
-
-Postman (API testing)
-
-API Endpoints Overview
-Full and detailed API documentation is available at /api-docs (Swagger UI).
+> Full and detailed API documentation is available at `/api-docs` (Swagger UI).
 
 Main operations:
 
-User registration and login
+- User registration and login  
+- View and update own profile  
+- Create, edit, delete, and view posts  
+- Manage comments  
 
-View and update own profile
+## How to Run
 
-Create, edit, delete, and view posts
+1. Clone the repository  
+2. Install required packages: `npm install`  
+3. Configure environment variables (.env) (database, JWT, email settings)  
+4. Run Prisma migrations  
+5. Start the server: `npm run dev`  
+6. View the API documentation: `/api-docs` (Swagger UI)  
 
-Manage comments
+## Deployment
 
-How to Run
-Clone the repository
-
-Install required packages: npm install
-
-Configure environment variables (.env) (database, JWT, email settings)
-
-Run Prisma migrations
-
-Start the server: npm run dev
-
-View the API documentation: /api-docs (Swagger UI)
-
-Deployment
 The project is ready for deployment to Heroku or other online platforms.
+
+---
 
 Created by Gigi Bajadze ❤
 
-
-
-
-
-
-
-
+---------------------------------------------------------
 
 # Blog Platform Backend API
 
