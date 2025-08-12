@@ -52,7 +52,7 @@ The project is ready for deployment to Heroku or other online platforms.
 
 ---
 
-Created by Gigi Bajadze ❤
+Created by Gigi Bajadze 
 
 ---------------------------------------------------------
 
@@ -110,4 +110,4 @@ Blog Platform-ის Backend API, რომელიც საშუალებ
 
 ---
 
-შექმნილია გიგი ბაჯაძის მიერ ❤
+შექმნილია გიგი ბაჯაძის მიერ 
